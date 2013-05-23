@@ -1,9 +1,6 @@
 --[[ =================================================================
     Description:
         All globals used within BagTips.
-
-    Revision:
-        $Id: BagTips_globals.lua 772 2013-02-05 15:32:54Z fmeus_lgs $
     ================================================================= --]]
 
 -- Colors used within BagTips

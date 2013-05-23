@@ -4,7 +4,6 @@
 ## Author: fmeus
 ## Notes: BagTips gives you a peek at what is in a particular bag without having to open the bag.
 ## DefaultState: enabled
-## Revision: $Id: BagTips.toc 1095 2013-05-22 07:15:19Z fmeus_lgs $
 
 BagTips_globals.lua
 
