@@ -1,0 +1,22 @@
+## Interface: 50300
+## Title: BagTips
+## Version: 2.3
+## Author: fmeus
+## Notes: BagTips gives you a peek at what is in a particular bag without having to open the bag.
+## DefaultState: enabled
+## Revision: $Id: BagTips.toc 1095 2013-05-22 07:15:19Z fmeus_lgs $
+
+BagTips_globals.lua
+
+BagTips_en.lua
+BagTips_es.lua
+BagTips_fr.lua
+BagTips_de.lua
+BagTips_ru.lua
+BagTips_kr.lua
+BagTips_cn.lua
+BagTips_tw.lua
+
+BagTips.lua
+
+BagTips.xml
