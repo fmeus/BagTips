@@ -16,9 +16,6 @@
     Credits:
         A big 'Thank You' to all the people at Blizzard Entertainment
         for making World of Warcraft.
-
-    Revision:
-        $Id: BagTips.lua 772 2013-02-05 15:32:54Z fmeus_lgs $
     ================================================================= --]]
 
 -- Send message to the default chat frame
@@ -43,7 +40,7 @@
         local bagName = self:GetName();
         local bagID = BT_BAG_IDS[bagName];
         local hasContent = false;
-        local itemLink, itemid, itemCount, itemName, itemQuality, itemTexture, r, g, b, hex;
+        local itemLink, itemid, itemCount, itemName, itemQuality, itemTexture, r, g, b, hex, _;
         local vendorvalue = 0;
 
         -- Clear data
@@ -60,12 +57,25 @@
             -- Retrieve item information
             if ( itemLink ) then
                 _, itemid = strsplit( ":", itemLink );
+
                 itemid = tonumber( itemid );
                 _, itemCount = GetContainerItemInfo( bagID, slotID );
+                itemName, _, itemQuality, _, _, _, _, _, _, itemTexture, sellPrice = GetItemInfo( itemid );
+
+                if ( not items[itemid] ) then
+                    items[itemid] = { count = 0, name = itemName, quality = itemQuality, texture = itemTexture, price = ( sellPrice or 0 ) };
+                end;
+
+                if ( strfind( itemLink, "battlepet:" ) ) then
+                    local _, icon = C_PetJournal.GetPetInfoBySpeciesID( itemid );
+                    items[itemid].name = strmatch( itemLink, "%[(.+)%]" );
+                    items[itemid].quality = 3;
+                    items[itemid].texture = icon; 
+                end;
 
                 if ( itemCount > 0 ) then
                     hasContent = true;
-                    items[itemid] = ( items[itemid] or 0 ) + itemCount;
+                    items[itemid].count = ( items[itemid].count or 0 ) + itemCount;
                 end;
             end;
         end;
@@ -74,10 +84,9 @@
         tooltip:AddLine( "|n"..BT_CONTENTS );
         if ( hasContent ) then
             for key, value in pairs( items ) do
-                itemName, _, itemQuality, _, _, _, _, _, _, itemTexture, sellPrice = GetItemInfo( key );
-                r, g, b, hex = GetItemQualityColor( itemQuality );
-                tooltip:AddDoubleLine( "  |T"..itemTexture..":0|t "..itemName, value, r, g, b );
-                vendorvalue = vendorvalue + ( value * sellPrice );
+                r, g, b, hex = GetItemQualityColor( value.quality );
+                tooltip:AddDoubleLine( "  |T"..value.texture..":0|t "..value.name, value.count, r, g, b );
+                vendorvalue = vendorvalue + ( value.count * value.price );
             end;
         else
             tooltip:AddLine( "  "..BT_EMPTY );
