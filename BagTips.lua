@@ -18,6 +18,9 @@
         for making World of Warcraft.
     ================================================================= --]]
 
+-- Create frame for responding to game events
+    local f = CreateFrame( "Frame", "BagTips", UIParent );
+
 -- Send message to the default chat frame
     function BagTips_Message( msg, prefix )
         -- Initialize
@@ -37,7 +40,7 @@
         -- Initialize
         local tooltip = GameTooltip;
         local items = items;
-        local bagName = self:GetName();
+        local bagName = self:GetName() or "BankFrameBag"..self:GetID();
         local bagID = BT_BAG_IDS[bagName];
         local hasContent = false;
         local itemLink, itemid, itemCount, itemName, itemQuality, itemTexture, r, g, b, hex, _;
@@ -117,13 +120,6 @@
         BT_Hooks["CharacterBag1Slot"] = CharacterBag1Slot.UpdateTooltip;
         BT_Hooks["CharacterBag2Slot"] = CharacterBag2Slot.UpdateTooltip;
         BT_Hooks["CharacterBag3Slot"] = CharacterBag3Slot.UpdateTooltip;
-        BT_Hooks["BankFrameBag1"] = BankFrameBag1.UpdateTooltip;
-        BT_Hooks["BankFrameBag2"] = BankFrameBag2.UpdateTooltip;
-        BT_Hooks["BankFrameBag3"] = BankFrameBag3.UpdateTooltip;
-        BT_Hooks["BankFrameBag4"] = BankFrameBag4.UpdateTooltip;
-        BT_Hooks["BankFrameBag5"] = BankFrameBag5.UpdateTooltip;
-        BT_Hooks["BankFrameBag6"] = BankFrameBag6.UpdateTooltip;
-        BT_Hooks["BankFrameBag7"] = BankFrameBag7.UpdateTooltip;
 
         -- Set new OnEnter/UpdateTooltip functions
         MainMenuBarBackpackButton:SetScript( "OnEnter", BagTips_OnEnter );
@@ -131,11 +127,28 @@
         CharacterBag1Slot.UpdateTooltip = BagTips_OnEnter;
         CharacterBag2Slot.UpdateTooltip = BagTips_OnEnter;
         CharacterBag3Slot.UpdateTooltip = BagTips_OnEnter;
-        BankFrameBag1.UpdateTooltip = BagTips_OnEnter;
-        BankFrameBag2.UpdateTooltip = BagTips_OnEnter; 
-        BankFrameBag3.UpdateTooltip = BagTips_OnEnter; 
-        BankFrameBag4.UpdateTooltip = BagTips_OnEnter; 
-        BankFrameBag5.UpdateTooltip = BagTips_OnEnter; 
-        BankFrameBag6.UpdateTooltip = BagTips_OnEnter; 
-        BankFrameBag7.UpdateTooltip = BagTips_OnEnter; 
     end;
+
+-- Install hooks for Bank bags
+    function f:BANKFRAME_OPENED( event, ... )
+        -- Save original OnEnter/UpdateTooltip functions
+        for i = 1, NUM_BANKBAGSLOTS, 1 do
+            BT_Hooks["BankFrameBag"..i] = BankSlotsFrame["Bag"..i].UpdateTooltip;
+        end;
+
+        -- Set new OnEnter/UpdateTooltip functions
+        for i = 1, NUM_BANKBAGSLOTS, 1 do
+            BankSlotsFrame["Bag"..i].UpdateTooltip = BagTips_OnEnter;
+        end;
+    end;
+
+-- Generic event handler
+    local function OnEvent( self, event, ... )
+        self[event]( self, event, ... );
+    end;
+
+-- Setup event handler
+    f:SetScript( "OnEvent", OnEvent );
+
+-- Register events to listen to
+    f:RegisterEvent( "BANKFRAME_OPENED" );
