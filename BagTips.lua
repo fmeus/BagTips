@@ -18,9 +18,6 @@
         for making World of Warcraft.
     ================================================================= --]]
 
--- Create frame for responding to game events
-    local f = CreateFrame( "Frame", "BagTips", UIParent );
-
 -- Send message to the default chat frame
     function BagTips_Message( msg, prefix )
         -- Initialize
@@ -120,6 +117,9 @@
         BT_Hooks["CharacterBag1Slot"] = CharacterBag1Slot.UpdateTooltip;
         BT_Hooks["CharacterBag2Slot"] = CharacterBag2Slot.UpdateTooltip;
         BT_Hooks["CharacterBag3Slot"] = CharacterBag3Slot.UpdateTooltip;
+        for i = 1, NUM_BANKBAGSLOTS, 1 do
+            BT_Hooks["BankFrameBag"..i] = BankSlotsFrame["Bag"..i].UpdateTooltip;
+        end;
 
         -- Set new OnEnter/UpdateTooltip functions
         MainMenuBarBackpackButton:SetScript( "OnEnter", BagTips_OnEnter );
@@ -127,28 +127,7 @@
         CharacterBag1Slot.UpdateTooltip = BagTips_OnEnter;
         CharacterBag2Slot.UpdateTooltip = BagTips_OnEnter;
         CharacterBag3Slot.UpdateTooltip = BagTips_OnEnter;
-    end;
-
--- Install hooks for Bank bags
-    function f:BANKFRAME_OPENED( event, ... )
-        -- Save original OnEnter/UpdateTooltip functions
-        for i = 1, NUM_BANKBAGSLOTS, 1 do
-            BT_Hooks["BankFrameBag"..i] = BankSlotsFrame["Bag"..i].UpdateTooltip;
-        end;
-
-        -- Set new OnEnter/UpdateTooltip functions
         for i = 1, NUM_BANKBAGSLOTS, 1 do
             BankSlotsFrame["Bag"..i].UpdateTooltip = BagTips_OnEnter;
         end;
     end;
-
--- Generic event handler
-    local function OnEvent( self, event, ... )
-        self[event]( self, event, ... );
-    end;
-
--- Setup event handler
-    f:SetScript( "OnEvent", OnEvent );
-
--- Register events to listen to
-    f:RegisterEvent( "BANKFRAME_OPENED" );
