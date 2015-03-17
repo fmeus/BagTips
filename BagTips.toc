@@ -1,6 +1,6 @@
-## Interface: 60000
+## Interface: 60100
 ## Title: BagTips
-## Version: 2.7
+## Version: 2.8
 ## Author: fmeus
 ## Notes: BagTips gives you a peek at what is in a particular bag without having to open the bag.
 ## DefaultState: enabled
