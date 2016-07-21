@@ -3,13 +3,6 @@
         BagTips gives you a peek at what is in a particular bag
         without having to open the bag
 
-    Download:
-        BagTips - http://fmeus.wordpress.com/bagtips/
-
-    Contact:
-        For questions, bug reports visit the website or send an email
-        to the following address: wowaddon@xs4all.nl
-
     Dependencies:
         None
 
